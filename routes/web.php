@@ -13,3 +13,4 @@
 
 Route::get('/', 'HomepageController@index')->name('home.index');
 Route::post('/', 'HomepageController@store')->name('home.store');
+Route::delete('/{id}', 'HomepageController@destroy')->name('home.delete');

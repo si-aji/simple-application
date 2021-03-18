@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Files;
 use Carbon\Carbon;
 
 use Illuminate\Http\Request;
@@ -35,7 +36,10 @@ class HomepageController extends Controller
      */
     public function index()
     {
-        return view('welcome');
+        $data = Files::all();
+        return view('welcome', [
+            'data' => $data
+        ]);
     }
 
     /**
@@ -56,9 +60,31 @@ class HomepageController extends Controller
 
         $image = $this->imageUpload($request->image);
 
+        $data = new Files;
+        $data->filename = $image;
+        $data->save();
+
         return redirect()->back()->with([
             'status' => 'success',
             'message' => 'Data Fetched'
+        ]);
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function destroy($id)
+    {
+        $data = Files::findOrFail($id);
+        \Storage::delete($this->file_location.'/'.$data->filename);
+        $data->delete();
+
+        return redirect()->back()->with([
+            'status' => 'success',
+            'message' => 'Data Deleted | '.$id
         ]);
     }
 }

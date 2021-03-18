@@ -47,6 +47,47 @@
                     </div>
                 </form>
             </div>
+
+            <div class="clearfix"></div>
+
+            <form class="d-none" id="delete-form" method="POST" action="{{ route('home.index') }}">
+                @csrf
+                @method('DELETE')
+            </form>
+
+            <div class="card mt-5">
+                <div class="card-header">
+                    <h3 class="card-title">List File</h3>
+                </div>
+                <div class="card-body p-0">
+                    <table class="table table-sm table-hover table-striped mb-0">
+                        <thead>
+                            <tr>
+                                <th>Filename</th>
+                                <th>Uploaded on</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (count($data) <= 0)
+                            <tr class="align-items-center">
+                                <td colspan="3" class="text-center">Data is Empty</td>
+                            </tr>
+                            @else
+                                @foreach ($data as $item)
+                                    <tr class="align-items-center">
+                                        <td><a href="{{ asset('home'.'/'.$item->filename) }}" target="_blank">{{ $item->filename }}</a></td>
+                                        <td>{{ $item->created_at }}</td>
+                                        <td>
+                                            <a href="javascript:void(0)" onclick="deleteAction('{{ $item->id }}')" class="btn btn-danger btn-sm">Delete</a>
+                                        </td>
+                                    </tr>
+                                @endforeach
+                            @endif
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         </div>
     </div>
     
@@ -58,6 +99,13 @@
         $(document).ready(function () {
             bsCustomFileInput.init()
         });
+
+        function deleteAction(id){
+            console.log("Delete Action is running...");
+            let url = "{{ route('home.index') }}";
+
+            $("#delete-form").attr('action', `${url}/${id}`).submit();
+        }
     </script>
 </body>
 </html>
